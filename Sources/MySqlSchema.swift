@@ -26,6 +26,18 @@ class MySqlSchema {
         return array.joined(separator: "\n")
     }
     
+    func contains(columnName: String) -> Bool {
+        return columnMap[columnName] != nil
+    }
+    
+    func getOrdinalPosition(forColumn: String) -> Int {
+        if let column = columnMap[forColumn] {
+            return column.ordinal
+        }
+        
+        return -1
+    }
+    
     init(results: UnsafeMutablePointer<MYSQL_RES>) {
         numColumns = Int(mysql_num_fields(results))
         

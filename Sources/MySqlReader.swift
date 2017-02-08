@@ -11,14 +11,12 @@ import Foundation
 
 class MySqlReader {
 
-    private let connection: MySqlConnection
+    private let connection: MySqlConnectionProtocol
     private var results: MySqlResults
 
     let schema: MySqlSchema
-    var row: MySqlRow?
     
-    
-    init(connection: MySqlConnection) throws {
+    init(connection: MySqlConnectionProtocol) throws {
         self.connection = connection
         
         try results = MySqlResults(connection: connection)
@@ -26,7 +24,7 @@ class MySqlReader {
     }
     
     func nextResultSet() throws -> Bool {
-        if mysql_next_result(connection.TheConnection) == 0 {
+        if connection.nextResult() {
             try results = MySqlResults(connection: connection)
             return true
         }
@@ -35,11 +33,20 @@ class MySqlReader {
     }
     
     func next() -> Bool {
-        if let row: MYSQL_ROW = mysql_fetch_row(results.results) {
-            self.row = MySqlRow(row: row, schema: schema)
-            return true
-        }
+        return results.getNextRow()
+    }
     
-        return false
+    func getString(ordinal: Int) -> String {
+        return results.getString(ordinal)
+    }
+    
+    func getString(columnName: String) throws -> String {
+        let ordinal = schema.getOrdinalPosition(forColumn: columnName)
+        
+        if ordinal == -1 {
+            throw MySqlErrors.InvalidColumnSpecified
+        }
+        
+        return getString(ordinal: ordinal)
     }
 }

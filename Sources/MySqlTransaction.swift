@@ -17,20 +17,16 @@ class MySqlTransaction {
              Rolledback
     }
     
-    
-    let connection: MySqlConnection
+    let connection: MySqlConnectionTransactionProtocol
     private var state = MySqlTransactionState.Open
     
-    init(connection: MySqlConnection) {
+    init(connection: MySqlConnectionTransactionProtocol) {
         self.connection = connection
-        mysql_autocommit(connection.TheConnection, 0)
+        connection.setAutoCommit(false)
     }
     
     func rollback() throws {
-        if mysql_rollback(connection.TheConnection) != 0 {
-            throw MySqlErrors.TransactionError(error: GetMySqlError(connection: connection.TheConnection))
-        }
-        
+        try connection.rollback()
         state = MySqlTransactionState.Rolledback
     }
     
@@ -39,16 +35,17 @@ class MySqlTransaction {
             return
         }
         
-        if mysql_commit(connection.TheConnection) != 0 {
-            throw MySqlErrors.TransactionError(error: GetMySqlError(connection: connection.TheConnection))
-        }
-        
+        try connection.commit()
         state = MySqlTransactionState.Committed
     }
 
     deinit {
         do {
-            try self.commit()
+            if (state == MySqlTransactionState.Open) {
+                try connection.commit()
+            }
+            
+            connection.setAutoCommit(true)
         } catch MySqlErrors.TransactionError(let error) {
             print(error)
         } catch {

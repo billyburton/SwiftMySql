@@ -12,27 +12,21 @@ import Foundation
 class MySqlCommand {
     
     let command: String
-    let connection: MySqlConnection
+    let connection: MySqlConnectionProtocol
     
-    init(command: String, connection: MySqlConnection) {
+    init(command: String, connection: MySqlConnectionProtocol) {
         self.command = command
         self.connection = connection
     }
     
     private func commandExecute() throws {
-        if let mysql = connection.TheConnection {
-            if mysql_query(mysql, command) != 0 {
-                throw MySqlErrors.CommandError(error: GetMySqlError(connection: mysql))
-            }
-        } else {
-            throw MySqlErrors.InvalidConnection(error: GetMySqlError(connection: nil))
-        }
+        try connection.executeSqlQuery(sqlQuery: command)
     }
     
     func execute() throws {
         try self.commandExecute()
         
-        while mysql_next_result(connection.TheConnection) == 0 {
+        while connection.nextResult() {
             
         }
     }
