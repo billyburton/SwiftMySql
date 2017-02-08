@@ -9,7 +9,7 @@
 import Foundation
 import SwiftCMySqlMac
 
-protocol MySqlResultsProtocol {
+public protocol MySqlResultsProtocol {
     var row: MySqlRow? { get }
     func getNextRow() -> Bool
     func getString(_ ordinal: Int) -> String

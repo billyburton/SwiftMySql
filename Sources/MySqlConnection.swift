@@ -9,11 +9,11 @@
 import SwiftCMySqlMac
 import Foundation
 
-class MySqlConnection: MySqlConnectionProtocol, MySqlConnectionTransactionProtocol {
+public class MySqlConnection: MySqlConnectionProtocol, MySqlConnectionTransactionProtocol {
     
     private let mysql: UnsafeMutablePointer<MYSQL>?
     
-    required init(server: String, database: String, user: String, password: String) throws {
+    public required init(server: String, database: String, user: String, password: String) throws {
         if let mysql = mysql_init(nil) {
             if mysql_real_connect(mysql, server, user, password, database, 0, nil, CLIENT_MULTI_STATEMENTS) != nil {
                 self.mysql = mysql
@@ -35,17 +35,17 @@ class MySqlConnection: MySqlConnectionProtocol, MySqlConnectionTransactionProtoc
         }
     }
     
-    func executeSqlQuery(sqlQuery: String) throws {
+    public func executeSqlQuery(sqlQuery: String) throws {
         if mysql_query(mysql, sqlQuery) != 0 {
             throw MySqlErrors.CommandError(error: GetMySqlError())
         }
     }
     
-    func nextResult() -> Bool {
+    public func nextResult() -> Bool {
         return mysql_next_result(mysql) == 0
     }
     
-    func storeResults() throws -> MySqlResultsProtocol {
+    public func storeResults() throws -> MySqlResultsProtocol {
         if let results = mysql_store_result(mysql) {
             return MySqlResults(results)
         } else {

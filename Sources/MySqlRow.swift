@@ -9,7 +9,7 @@
 import SwiftCMySqlMac
 import Foundation
 
-class MySqlRow {
+public class MySqlRow {
     private let theRow: MYSQL_ROW
     
     init(row: MYSQL_ROW) {

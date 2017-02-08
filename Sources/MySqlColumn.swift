@@ -44,7 +44,7 @@ public enum MySqlFieldTypes: Int {
             undefined = -1
 }
 
-struct MySqlColumn {
+public struct MySqlColumn {
     public let ordinal: Int
     public let name: String
     public let length: UInt

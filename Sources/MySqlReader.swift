@@ -9,12 +9,18 @@
 import SwiftCMySqlMac
 import Foundation
 
-class MySqlReader {
+public class MySqlReader {
 
     private let connection: MySqlConnectionProtocol
     private var results: MySqlResultsProtocol
 
     lazy var schema: MySqlSchema = MySqlSchema(self.results)
+    
+    public var columnNames: [String] {
+        get {
+            return schema.columnNames
+        }
+    }
     
     init(connection: MySqlConnectionProtocol) throws {
         self.connection = connection
@@ -31,15 +37,15 @@ class MySqlReader {
         return false
     }
     
-    func next() -> Bool {
+    public func next() -> Bool {
         return results.getNextRow()
     }
     
-    func getString(ordinal: Int) -> String {
+    public func getString(ordinal: Int) -> String {
         return results.getString(ordinal)
     }
     
-    func getString(columnName: String) throws -> String {
+    public func getString(columnName: String) throws -> String {
         let ordinal = schema.getOrdinalPosition(forColumn: columnName)
         
         if ordinal == -1 {

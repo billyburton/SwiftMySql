@@ -9,7 +9,7 @@
 import Foundation
 import SwiftCMySqlMac
 
-protocol MySqlConnectionProtocol {
+public protocol MySqlConnectionProtocol {
     init(server: String, database: String, user: String, password: String) throws
     func executeSqlQuery(sqlQuery: String) throws
     func nextResult() -> Bool
