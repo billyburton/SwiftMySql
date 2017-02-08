@@ -1,6 +1,6 @@
 //
 //  MySqlColumn.swift
-//  mysql_ui
+//  SwiftMySql
 //
 //  Created by William Burton on 05/02/2017.
 //  Copyright © 2017 William Burton. All rights reserved.
@@ -9,7 +9,7 @@
 import SwiftCMySqlMac
 import Foundation
 
-enum MySqlFieldTypes: Int {
+public enum MySqlFieldTypes: Int {
     case    decimal,
             tiny,
             short,
@@ -45,18 +45,18 @@ enum MySqlFieldTypes: Int {
 }
 
 struct MySqlColumn {
-    let ordinal: Int
-    let name: String
-    let length: UInt64
-    let maxLength: UInt64
-    let decimals: Int
-    let type: MySqlFieldTypes
+    public let ordinal: Int
+    public let name: String
+    public let length: UInt64
+    public let maxLength: UInt64
+    public let decimals: Int
+    public let type: MySqlFieldTypes
     
     var description: String {
         return "\(name), \(type), \(length), \(maxLength), \(decimals)"
     }
     
-    init(field: MYSQL_FIELD, ordinal: Int) {
+    public init(field: MYSQL_FIELD, ordinal: Int) {
         self.ordinal = ordinal
         
         if let name = String(utf8String: UnsafePointer<CChar>(field.name)) {
