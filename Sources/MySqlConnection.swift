@@ -13,7 +13,7 @@ class MySqlConnection: MySqlConnectionProtocol, MySqlConnectionTransactionProtoc
     
     private let mysql: UnsafeMutablePointer<MYSQL>?
     
-    init(server: String, database: String, user: String, password: String) throws {
+    required init(server: String, database: String, user: String, password: String) throws {
         if let mysql = mysql_init(nil) {
             if mysql_real_connect(mysql, server, user, password, database, 0, nil, CLIENT_MULTI_STATEMENTS) != nil {
                 self.mysql = mysql
@@ -45,9 +45,9 @@ class MySqlConnection: MySqlConnectionProtocol, MySqlConnectionTransactionProtoc
         return mysql_next_result(mysql) == 0
     }
     
-    func storeResults() throws -> UnsafeMutablePointer<MYSQL_RES> {
+    func storeResults() throws -> MySqlResultsProtocol {
         if let results = mysql_store_result(mysql) {
-            return results
+            return MySqlResults(results)
         } else {
             throw MySqlErrors.ReaderError(error: GetMySqlError())
         }

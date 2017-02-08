@@ -38,16 +38,14 @@ class MySqlSchema {
         return -1
     }
     
-    init(results: UnsafeMutablePointer<MYSQL_RES>) {
-        numColumns = Int(mysql_num_fields(results))
+    init(_ results: MySqlResultsProtocol) {
+        numColumns = results.getFieldCount()
         
         var ordMap = [String: MySqlColumn]()
 
         for ord in 0 ..< numColumns {
-            if let field: MYSQL_FIELD = mysql_fetch_field(results)?.pointee {
-                let column = MySqlColumn(field: field, ordinal: ord)
-                ordMap[column.name] = column
-            }
+            let column = results.getFieldInfo(ord)
+            ordMap[column.name] = column
         }
         
         self.columnMap = ordMap

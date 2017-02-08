@@ -10,7 +10,8 @@ import Foundation
 import SwiftCMySqlMac
 
 protocol MySqlConnectionProtocol {
+    init(server: String, database: String, user: String, password: String) throws
     func executeSqlQuery(sqlQuery: String) throws
     func nextResult() -> Bool
-    func storeResults() throws -> UnsafeMutablePointer<MYSQL_RES>
+    func storeResults() throws -> MySqlResultsProtocol
 }

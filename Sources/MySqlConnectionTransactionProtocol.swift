@@ -9,6 +9,7 @@
 import Foundation
 
 protocol MySqlConnectionTransactionProtocol {
+    init(server: String, database: String, user: String, password: String) throws
     func setAutoCommit(_ on: Bool)
     func rollback() throws   
     func commit() throws

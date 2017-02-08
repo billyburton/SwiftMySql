@@ -9,13 +9,13 @@
 import SwiftCMySqlMac
 import Foundation
 
-class MySqlResults {
+class MySqlResults: MySqlResultsProtocol {
     
     let results: UnsafeMutablePointer<MYSQL_RES>
     var row: MySqlRow?
     
-    init(connection: MySqlConnectionProtocol) throws {
-        try results = connection.storeResults()
+    init(_ results: UnsafeMutablePointer<MYSQL_RES>) {
+        self.results = results
     }
     
     func getNextRow() -> Bool {
@@ -34,7 +34,27 @@ class MySqlResults {
         
         return row.getString(ordinal) ?? ""
     }
+
+    func getFieldCount() -> Int {
+        return Int(mysql_num_fields(results))
+    }
     
+    func getFieldInfo(_ ordinal: Int) -> MySqlColumn {
+        if let field: MYSQL_FIELD = mysql_fetch_field(results)?.pointee {
+            let name = String(utf8String: UnsafePointer<CChar>(field.name)) ?? ""
+            let type = MySqlFieldTypes(rawValue: Int(field.type.rawValue)) ?? MySqlFieldTypes.undefined
+            
+            return MySqlColumn(name: name,
+                               length: field.length,
+                               maxLength: field.max_length,
+                               decimals: field.decimals,
+                               type: type,
+                               ordinal: ordinal)
+        }
+        
+        return MySqlColumn(name: "", length: 0, maxLength: 0, decimals: 0, type: MySqlFieldTypes.undefined, ordinal: ordinal)
+    }
+
     deinit {
         mysql_free_result(results)
     }

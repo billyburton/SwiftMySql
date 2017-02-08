@@ -12,20 +12,19 @@ import Foundation
 class MySqlReader {
 
     private let connection: MySqlConnectionProtocol
-    private var results: MySqlResults
+    private var results: MySqlResultsProtocol
 
-    let schema: MySqlSchema
+    lazy var schema: MySqlSchema = MySqlSchema(self.results)
     
     init(connection: MySqlConnectionProtocol) throws {
         self.connection = connection
         
-        try results = MySqlResults(connection: connection)
-        self.schema = MySqlSchema(results: results.results)
+        results = try connection.storeResults()
     }
     
     func nextResultSet() throws -> Bool {
         if connection.nextResult() {
-            try results = MySqlResults(connection: connection)
+            results = try connection.storeResults()
             return true
         }
         

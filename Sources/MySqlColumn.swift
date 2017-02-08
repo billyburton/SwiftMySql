@@ -47,32 +47,21 @@ public enum MySqlFieldTypes: Int {
 struct MySqlColumn {
     public let ordinal: Int
     public let name: String
-    public let length: UInt64
-    public let maxLength: UInt64
-    public let decimals: Int
+    public let length: UInt
+    public let maxLength: UInt
+    public let decimals: UInt32
     public let type: MySqlFieldTypes
     
     var description: String {
         return "\(name), \(type), \(length), \(maxLength), \(decimals)"
     }
     
-    public init(field: MYSQL_FIELD, ordinal: Int) {
+    init(name: String, length: UInt, maxLength: UInt, decimals: UInt32, type: MySqlFieldTypes, ordinal: Int) {
         self.ordinal = ordinal
-        
-        if let name = String(utf8String: UnsafePointer<CChar>(field.name)) {
-            self.name = name
-        } else {
-            self.name = ""
-        }
-        
-        self.length = UInt64(field.length)
-        self.maxLength = UInt64(field.max_length)
-        self.decimals = Int(field.decimals)
-        
-        if let type = MySqlFieldTypes(rawValue: Int(field.type.rawValue)) {
-            self.type = type
-        } else {
-            self.type = MySqlFieldTypes.undefined
-        }
+        self.name = name
+        self.length = length
+        self.maxLength = maxLength
+        self.decimals = decimals
+        self.type = type
     }
 }
