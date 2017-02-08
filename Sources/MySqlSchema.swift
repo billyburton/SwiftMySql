@@ -9,7 +9,7 @@
 import SwiftCMySqlMac
 import Foundation
 
-class MySqlSchema {
+class MySqlSchema: MySqlSchemaProtocol {
     let columnMap: [String: MySqlColumn]
     let numColumns: Int
     
@@ -38,7 +38,7 @@ class MySqlSchema {
         return -1
     }
     
-    init(_ results: MySqlResultsProtocol) {
+    required init(_ results: MySqlResultsProtocol) {
         numColumns = results.getFieldCount()
         
         var ordMap = [String: MySqlColumn]()

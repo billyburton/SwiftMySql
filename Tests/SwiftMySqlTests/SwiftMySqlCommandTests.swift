@@ -3,8 +3,36 @@ import SwiftCMySqlMac
 @testable import SwiftMySql
 
 class SwiftMySqlCommandTests: XCTestCase {
+    
+    //MARK: Mocks
+    
     private enum TestErrors: Error {
         case testError, failError
+    }
+    
+    private class MySqlReaderMock: MySqlReaderProtocol {
+        lazy var schema: MySqlSchemaProtocol = MySqlSchema(MySqlResultsMock())
+        var columnNames: [String] = [String]()
+        
+        func nextResultSet() throws -> Bool {
+            return false
+        }
+        
+        func next() -> Bool {
+            return false
+        }
+        
+        func getString(ordinal: Int) -> String {
+            return ""
+        }
+        
+        func getString(columnName: String) throws -> String {
+            return ""
+        }
+        
+        required init(connection: MySqlConnectionProtocol) throws {
+            
+        }
     }
     
     private class MySqlResultsMock: MySqlResultsProtocol {
@@ -53,6 +81,15 @@ class SwiftMySqlCommandTests: XCTestCase {
         }
     }
     
+    //MARK: Setup
+    override func setUp() {
+        MySqlFactory.readerClosure = {
+            connection in
+            return try! MySqlReaderMock(connection: connection)
+        }
+    }
+    
+    //MARK: Execute tests
     func test_MySqlCommand_execute_calls_connection_executeSqlQuery() {
         let connection = MySqlConnectionMock(server: "", database: "", user: "", password: "")
         let command = MySqlCommand(command: "", connection: connection)
@@ -84,6 +121,37 @@ class SwiftMySqlCommandTests: XCTestCase {
             XCTAssertTrue(true)
         } catch {
             XCTAssertTrue(false, "Error should be a TestErrors.testError")
+        }
+    }
+    
+    //MARK: createReader tests
+    func test_MySqlCommand_createReader_calls_connection_executeSqlQuery() {
+        let connection = MySqlConnectionMock(server: "", database: "", user: "", password: "")
+        let command = MySqlCommand(command: "", connection: connection)
+        
+        _ = try? command.createReader()
+        
+        XCTAssertTrue(connection.executeSqlQueryCalled, "MySqlCommand createReader should call MySqlConnection executeSqlQuery")
+    }
+    
+    func test_MySqlCommand_createReader_passes_queryt_to_executeSqlQuery() {
+        let expectedQuery = "SELECT * FROM TABLE"
+        let connection = MySqlConnectionMock(server: "", database: "", user: "", password: "")
+        let command = MySqlCommand(command: expectedQuery, connection: connection)
+
+        _ = try? command.createReader()
+        
+        XCTAssertEqual(expectedQuery, connection.query)
+    }
+    
+    func test_MySqlCommand_createReader_returns_MySqlReaderProtocol() {
+        let connection = MySqlConnectionMock(server: "", database: "", user: "", password: "")
+        let command = MySqlCommand(command: "", connection: connection)
+        
+        if let _ = try? command.createReader() {
+            XCTAssertTrue(true)
+        } else {
+            XCTAssertTrue(false, "command.createReader did not return a MySqlReaderProtocol instance")
         }
     }
 }

@@ -9,12 +9,12 @@
 import SwiftCMySqlMac
 import Foundation
 
-public class MySqlCommand {
+class MySqlCommand: MySqlCommandProtocol {
     
-    let command: String
-    let connection: MySqlConnectionProtocol
+    private let command: String
+    private let connection: MySqlConnectionProtocol
     
-    public init(command: String, connection: MySqlConnectionProtocol) {
+    required init(command: String, connection: MySqlConnectionProtocol) {
         self.command = command
         self.connection = connection
     }
@@ -31,9 +31,9 @@ public class MySqlCommand {
         }
     }
     
-    public func createReader() throws -> MySqlReader {
+    public func createReader() throws -> MySqlReaderProtocol {
         try self.commandExecute()
     
-        return try MySqlReader(connection: connection)
+        return try MySqlFactory.createReader(connection: connection)
     }
 }

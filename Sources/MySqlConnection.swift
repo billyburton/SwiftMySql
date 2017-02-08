@@ -9,11 +9,11 @@
 import SwiftCMySqlMac
 import Foundation
 
-public class MySqlConnection: MySqlConnectionProtocol, MySqlConnectionTransactionProtocol {
+class MySqlConnection: MySqlConnectionProtocol, MySqlConnectionTransactionProtocol {
     
     private let mysql: UnsafeMutablePointer<MYSQL>?
-    
-    public required init(server: String, database: String, user: String, password: String) throws {
+
+    required init(server: String, database: String, user: String, password: String) throws {
         if let mysql = mysql_init(nil) {
             if mysql_real_connect(mysql, server, user, password, database, 0, nil, CLIENT_MULTI_STATEMENTS) != nil {
                 self.mysql = mysql

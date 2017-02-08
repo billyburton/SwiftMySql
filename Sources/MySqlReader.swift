@@ -9,12 +9,12 @@
 import SwiftCMySqlMac
 import Foundation
 
-public class MySqlReader {
+class MySqlReader: MySqlReaderProtocol {
 
     private let connection: MySqlConnectionProtocol
     private var results: MySqlResultsProtocol
 
-    lazy var schema: MySqlSchema = MySqlSchema(self.results)
+    lazy var schema: MySqlSchemaProtocol = MySqlSchema(self.results)
     
     public var columnNames: [String] {
         get {
@@ -22,7 +22,7 @@ public class MySqlReader {
         }
     }
     
-    init(connection: MySqlConnectionProtocol) throws {
+    required init(connection: MySqlConnectionProtocol) throws {
         self.connection = connection
         
         results = try connection.storeResults()
