@@ -14,7 +14,7 @@ class MySqlReader: MySqlReaderProtocol {
     private let connection: MySqlConnectionProtocol
     private var results: MySqlResultsProtocol
 
-    lazy var schema: MySqlSchemaProtocol = MySqlSchema(self.results)
+    lazy var schema: MySqlSchemaProtocol = MySqlFactory.createSchema(results: self.results)
     
     public var columnNames: [String] {
         get {
