@@ -4,7 +4,7 @@ import SwiftCMySqlMac
 
 class MySqlTransactionTests: XCTestCase {
     //MARK: Mocks
-    private class MySqlConnectionMock: MySqlConnectionTransactionProtocol {
+    private class MySqlConnectionMock: MySqlConnectionProtocol {
         var autoCommitWasCalled = false
         var rollbackWasCalled = false
         var rollbackShouldThrowError = false

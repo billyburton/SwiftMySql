@@ -9,7 +9,7 @@
 import SwiftCMySqlMac
 import Foundation
 
-class MySqlTransaction {
+class MySqlTransaction: MySqlTransactionProtocol {
     
     private enum MySqlTransactionState {
         case Open,
@@ -17,10 +17,10 @@ class MySqlTransaction {
              Rolledback
     }
     
-    let connection: MySqlConnectionTransactionProtocol
+    let connection: MySqlConnectionProtocol
     private var state = MySqlTransactionState.Open
     
-    init(connection: MySqlConnectionTransactionProtocol) {
+    init(connection: MySqlConnectionProtocol) {
         self.connection = connection
         connection.setAutoCommit(false)
     }

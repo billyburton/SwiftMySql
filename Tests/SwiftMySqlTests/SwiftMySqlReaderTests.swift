@@ -16,6 +16,15 @@ class SwiftMySqlReaderTests: XCTestCase {
             
         }
         
+        func setAutoCommit(_ on: Bool) {
+        }
+        
+        func rollback() throws {
+        }
+        
+        func commit() throws {
+        }
+        
         func executeSqlQuery(sqlQuery: String) throws {
             
         }

@@ -19,6 +19,16 @@ public class MySqlFactory {
         return try connectionClosure(server, database, user, password)
     }
     
+    //MARK: Transaction factory
+    static var transactionClosure: (MySqlConnectionProtocol) -> (MySqlTransactionProtocol) = {
+        connection in
+        return MySqlTransaction(connection: connection)
+    }
+    
+    public class func createTransaction(connection: MySqlConnectionProtocol) -> (MySqlTransactionProtocol) {
+        return transactionClosure(connection)
+    }
+    
     //MARK: reader factory
     static var readerClosure: (MySqlConnectionProtocol) throws -> (MySqlReaderProtocol) = {
         connection in

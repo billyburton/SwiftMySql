@@ -14,4 +14,6 @@ public protocol MySqlConnectionProtocol {
     func executeSqlQuery(sqlQuery: String) throws
     func nextResult() -> Bool
     func storeResults() throws -> MySqlResultsProtocol
-}
+    func setAutoCommit(_ on: Bool)
+    func rollback() throws
+    func commit() throws}

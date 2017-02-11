@@ -36,6 +36,15 @@ class SwiftMySqlFactoryTests: XCTestCase {
             self.user = user
             self.password = password
         }
+
+        func setAutoCommit(_ on: Bool) {
+        }
+        
+        func rollback() throws {
+        }
+        
+        func commit() throws {
+        }
         
         func executeSqlQuery(sqlQuery: String) throws {
             

@@ -9,7 +9,7 @@
 import SwiftCMySqlMac
 import Foundation
 
-class MySqlConnection: MySqlConnectionProtocol, MySqlConnectionTransactionProtocol {
+class MySqlConnection: MySqlConnectionProtocol {
     
     private let mysql: UnsafeMutablePointer<MYSQL>?
 
