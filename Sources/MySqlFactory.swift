@@ -15,6 +15,16 @@ public class MySqlFactory {
         return try MySqlConnection(server: server, database: database, user: user, password: password)
     }
 
+    /**
+        Factory method for creating a MySqlConnectionProtocol instance.
+     - throws: An error of type MySqlError.InvalidConnection.
+     - parameters: 
+        - server: Name of the MySql server.
+        - database: Name of the MySql database.
+        - user: Name of user that will be used to access the database.
+        - password: Password of the MySql user.
+     - returns: An instance of MySqlConnectionProtocol.
+     */
     public class func createConnection(server: String, database: String, user: String, password: String) throws -> MySqlConnectionProtocol {
         return try connectionClosure(server, database, user, password)
     }
@@ -25,6 +35,11 @@ public class MySqlFactory {
         return MySqlTransaction(connection: connection)
     }
     
+    /**
+     Factory method for creating a MySqlTransactionProtocol instance
+     - parameter: connection: An instance of MySqlConnectionProtocol created using the createConnection method.
+     - returns: An instance of MySqlTransactionProtocol
+     */
     public class func createTransaction(connection: MySqlConnectionProtocol) -> (MySqlTransactionProtocol) {
         return transactionClosure(connection)
     }
@@ -35,7 +50,13 @@ public class MySqlFactory {
         return try MySqlReader(connection: connection)
     }
 
-    public class func createReader(connection: MySqlConnectionProtocol) throws -> MySqlReaderProtocol {
+    /**
+     Factory method for creating a MySqlReaderProtocol
+     - throw: An error of type MySqlError.ReaderError
+     - parameter: connection: An instance of MySqlConnectionProtocol created using the createConnection method.
+     - returns: An instance of MySqlReaderProtocol
+     */
+    class func createReader(connection: MySqlConnectionProtocol) throws -> MySqlReaderProtocol {
         return try readerClosure(connection)
     }
     
@@ -45,6 +66,13 @@ public class MySqlFactory {
         return MySqlCommand(command: command, connection: connection)
     }
     
+    /**
+     Factory method for creating a MySqlCommandProtocol
+     - parameters:
+        - command: Sql query command.
+        - connection: An instance of MySqlConnectionProtocol created using the createConnection method
+     - returns: An instance of MySqlCommandProtocol
+    */
     public class func createCommand(command: String, connection: MySqlConnectionProtocol) -> MySqlCommandProtocol {
         return commandClosure(command, connection)
     }
@@ -55,7 +83,12 @@ public class MySqlFactory {
         return MySqlSchema(results)
     }
     
-    public class func createSchema(results: MySqlResultsProtocol) -> MySqlSchemaProtocol {
+    /**
+     Factory method for creating a MySqlSchemaProtocol
+     - parameter: results: An instance of MySqlResultsProtocol, that contains a resultset returned from the MySql database.
+     - returns: An instance of MySqlSchemaProtocol
+     */
+    class func createSchema(results: MySqlResultsProtocol) -> MySqlSchemaProtocol {
         return schemaClosure(results)
     }
 }
