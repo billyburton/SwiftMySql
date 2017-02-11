@@ -23,6 +23,9 @@ class MySqlCommand: MySqlCommandProtocol {
         try connection.executeSqlQuery(sqlQuery: command)
     }
     
+    /**
+     Runs a SQL query against the database specified by the MySqlConnection.
+     */
     public func execute() throws {
         try self.commandExecute()
         
@@ -31,6 +34,9 @@ class MySqlCommand: MySqlCommandProtocol {
         }
     }
     
+    /**
+     Creates a MySqlReaderProtocol instance using the current SQL query and connection.
+    */
     public func createReader() throws -> MySqlReaderProtocol {
         try self.commandExecute()
     
