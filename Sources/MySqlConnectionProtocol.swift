@@ -9,6 +9,9 @@
 import Foundation
 import SwiftCMySqlMac
 
+/**
+ Provides methods used for working with a connection to a MySql database.
+ */
 public protocol MySqlConnectionProtocol {
     init(server: String, database: String, user: String, password: String) throws
     func executeSqlQuery(sqlQuery: String) throws
@@ -16,4 +19,5 @@ public protocol MySqlConnectionProtocol {
     func storeResults() throws -> MySqlResultsProtocol
     func setAutoCommit(_ on: Bool)
     func rollback() throws
-    func commit() throws}
+    func commit() throws
+}
