@@ -163,4 +163,44 @@ class SwiftMySqlCommandTests: XCTestCase {
             XCTAssertTrue(false, "command.createReader did not return a MySqlReaderProtocol instance")
         }
     }
+    
+    func test_MySqlCommand_set_command_string() {
+        let expectedCommand = "SELECT * FROM Cars"
+        
+        let connection = MySqlConnectionMock(server: "", database: "", user: "", password: "")
+        let command = MySqlCommand(command: expectedCommand, connection: connection)
+        
+        XCTAssertEqual(expectedCommand, command.command, "MySqlCommand init did not set command text")
+    }
+    
+    func test_MySqlCommand_addParameter() {
+        let connection = MySqlConnectionMock(server: "", database: "", user: "", password: "")
+        let command = MySqlCommand(command: "", connection: connection)
+        
+        command.addParameter(name: "", value: "")
+        
+        XCTAssertEqual(1, command.parameters.count, "Parameter has not been added to MySqlCommand")
+    }
+    
+    func test_MySqlCommand_clearParameters() {
+        let connection = MySqlConnectionMock(server: "", database: "", user: "", password: "")
+        let command = MySqlCommand(command: "", connection: connection)
+        
+        command.addParameter(name: "", value: "")
+        command.clearParameters()
+        
+        XCTAssertEqual(0, command.parameters.count, "Parameter has not been added to MySqlCommand")
+    }
+    
+    func test_MySqlCommand_setParameters() {
+        let expectedCommand = "Select * from Cars where Name = 'Audi'"
+        
+        let connection = MySqlConnectionMock(server: "", database: "", user: "", password: "")
+        let command = MySqlCommand(command: "Select * from Cars where Name = @Name", connection: connection)
+        
+        command.addParameter(name: "@Name", value: "Audi")
+        try? command.execute()
+
+        XCTAssertEqual(expectedCommand, connection.query, "Command should be \(expectedCommand) but is \(command.command)")
+    }
 }

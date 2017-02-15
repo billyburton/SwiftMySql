@@ -14,5 +14,6 @@ enum MySqlErrors : Error {
     case CommandError(error: String)
     case ReaderError(error: String)
     case TransactionError(error: String)
+    case AdapterError(error: String)
     case InvalidColumnSpecified
 }

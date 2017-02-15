@@ -12,4 +12,6 @@ public protocol MySqlCommandProtocol {
     init(command: String, connection: MySqlConnectionProtocol)
     func execute() throws
     func createReader() throws -> MySqlReaderProtocol
+    func addParameter(name: String, value: String)
+    func clearParameters()
 }

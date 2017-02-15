@@ -11,16 +11,35 @@ import Foundation
 
 class MySqlCommand: MySqlCommandProtocol {
     
-    private let command: String
     private let connection: MySqlConnectionProtocol
+    
+    var parameters = [String: String]()
+    var command: String
     
     required init(command: String, connection: MySqlConnectionProtocol) {
         self.command = command
         self.connection = connection
     }
     
+    public func addParameter(name: String, value: String) {
+        parameters[name] = value
+    }
+    
+    public func clearParameters() {
+        parameters.removeAll()
+    }
+    
+    private func setParameters() -> String {
+        var cmd = command
+        for parameter in parameters {
+            cmd = cmd.replacingOccurrences(of: parameter.key, with: "'\(parameter.value)'")
+        }
+        
+        return cmd
+    }
+    
     private func commandExecute() throws {
-        try connection.executeSqlQuery(sqlQuery: command)
+        try connection.executeSqlQuery(sqlQuery: setParameters())
     }
     
     /**
