@@ -10,10 +10,9 @@ import Foundation
 
 public protocol MySqlReadAdapterProtocol {
     static func fill<T: MySqlReadAdapterProtocol>(connection: MySqlConnectionProtocol, parameters: [String: String]) throws -> [T]
-    static func build() -> MySqlReadAdapterProtocol
+    static func build(reader: MySqlReaderProtocol) throws -> MySqlReadAdapterProtocol
     static func createCommand(connection: MySqlConnectionProtocol) -> MySqlCommandProtocol
     static var readCommandText: String { get }
-    func setValues(reader: MySqlReaderProtocol)
 }
 
 public extension MySqlReadAdapterProtocol {
@@ -27,8 +26,7 @@ public extension MySqlReadAdapterProtocol {
         let reader = try command.createReader()
         
         while reader.next() {
-            if let obj = T.build() as? T {
-                obj.setValues(reader: reader)
+            if let obj = try T.build(reader: reader) as? T {
                 items.append(obj)
             }
         }

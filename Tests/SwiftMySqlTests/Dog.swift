@@ -10,28 +10,33 @@ import Foundation
 import SwiftMySql
 
 class Dog {
-    var name: String?
-    var age: Int?
+    let name: String
+    let age: Int
+    
+    init(name: String, age: Int) {
+        self.name = name
+        self.age = age
+    }
 }
 
 extension Dog: MySqlReadAdapterProtocol {
+    public static func build(reader: MySqlReaderProtocol) throws -> MySqlReadAdapterProtocol {
+        do {
+            let name = try reader.getString(columnName: "name")
+            let dog = Dog(name: name, age: 2)
+            return dog
+        }
+    }
+
     public static var readCommandText: String {
         return "SELECT * FROM Dogs"
     }
 
-    static func build() -> MySqlReadAdapterProtocol {
-        return Dog()
-    }
-    
     static func createCommand(connection: MySqlConnectionProtocol) -> MySqlCommandProtocol {
         let reader = try? MySqlReaderMock(connection: connection)
         let command = MySqlCommandMock(command: readCommandText, connection: connection)
         command.reader = reader!
         return command
-    }
-    
-    func setValues(reader: MySqlReaderProtocol) {
-        self.name = try? reader.getString(columnName: "name")
     }
 }
 
@@ -41,7 +46,7 @@ extension Dog: MySqlCreateAdapterProtocol {
     }
 
     var createParameters: [String : String] {
-        return ["@name": self.name!, "@age": String(describing: self.age!)]
+        return ["@name": self.name, "@age": String(describing: self.age)]
     }
 }
 
@@ -51,7 +56,7 @@ extension Dog: MySqlUpdateAdapterProtocol {
     }
 
     var updateParameters: [String: String] {
-        return ["@name": self.name!, "@age": String(describing: self.age!)]
+        return ["@name": self.name, "@age": String(describing: self.age)]
     }
 }
 
@@ -61,6 +66,6 @@ extension Dog: MySqlDeleteAdapterProtocol {
     }
 
     var deleteParameters: [String: String] {
-        return ["@name": self.name!]
+        return ["@name": self.name]
     }
 }

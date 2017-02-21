@@ -9,10 +9,7 @@ class SwiftMySqlDeleteAdapterTests: XCTestCase {
         
         if let connection = try? MySqlConnectionMock(server: "", database: "", user: "", password: "") {
             
-            let dog = Dog()
-            dog.name = "Fido"
-            dog.age = 2
-            
+            let dog = Dog(name: "Fido", age: 2)
             try? dog.delete(connection: connection)
             
             XCTAssertEqual(connection.query, expectedQuery)

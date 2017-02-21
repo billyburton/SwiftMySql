@@ -15,9 +15,7 @@ class SwiftMySqlCRUDTests: XCTestCase {
     
     func test_CRUD_create() {
         if let connection = connection {
-            let cat = Cat()
-            cat.name = "Fifi"
-            
+            let cat = Cat(name: "Fifi")
             try? cat.create(connection: connection)
             
             XCTAssertEqual(expected_create_command, connection.query)
@@ -29,9 +27,7 @@ class SwiftMySqlCRUDTests: XCTestCase {
     
     func test_CRUD_update() {
         if let connection = connection {
-            let cat = Cat()
-            cat.name = "Fifi"
-            
+            let cat = Cat(name: "Fifi")
             try? cat.update(connection: connection)
             
             XCTAssertEqual(expected_update_command, connection.query)
@@ -43,9 +39,7 @@ class SwiftMySqlCRUDTests: XCTestCase {
     
     func test_CRUD_delete() {
         if let connection = connection {
-            let cat = Cat()
-            cat.name = "Fifi"
-            
+            let cat = Cat(name: "Fifi")
             try? cat.delete(connection: connection)
             
             XCTAssertEqual(expected_delete_command, connection.query)

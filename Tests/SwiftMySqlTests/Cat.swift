@@ -10,10 +10,19 @@ import Foundation
 import SwiftMySql
 
 class Cat {
-    var name: String?
+    let name: String
+    
+    init(name: String) {
+        self.name = name
+    }
 }
 
 extension Cat: MySqlCRUDAdapterProtocol {
+    public static func build(reader: MySqlReaderProtocol) throws -> MySqlReadAdapterProtocol {
+        let name = try reader.getString(columnName: "name")
+        return Cat(name: name)
+    }
+
     public static var readCommandText: String {
         return "SELECT * FROM Cats"
     }
@@ -38,15 +47,7 @@ extension Cat: MySqlCRUDAdapterProtocol {
     }
 
     func getParams() -> [String: String] {
-        return ["@name": self.name!]
-    }
-    
-    static func build() -> MySqlReadAdapterProtocol {
-        return Cat()
-    }
-    
-    func setValues(reader: MySqlReaderProtocol) {
-        self.name = try? reader.getString(columnName: "name")
+        return ["@name": self.name]
     }
     
     var createParameters: [String: String] {
